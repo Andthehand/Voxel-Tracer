@@ -1,0 +1,24 @@
+#type compute
+#version 460
+
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+// Binding 0
+layout(std140) uniform PushConstants {
+    mat4 pixelToRay;
+    uint voxel_resolution;
+    uint render_mode;
+} pc;
+
+layout(rgba8, binding = 0) writeonly uniform image2D targetImage;
+layout(rgba32ui, binding = 1) readonly uniform uimage3D voxelImage;
+
+void main() {
+    ivec2 pixelCoord = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 imageSize = imageSize(targetImage);
+
+//    if (any(greaterThanEqual(pixelCoord, imageSize)))
+//        return;
+
+    imageStore(targetImage, pixelCoord, vec4(1, 0, 0, 1));
+}
